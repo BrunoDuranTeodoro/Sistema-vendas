@@ -25,12 +25,12 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "O nome completo é obrigatório.")
+    @NotBlank(message = "Informe seu nome completo")
     @Column(nullable = false, length = 150)
     private String nomeCompleto;
 
-    @NotBlank(message = "O e-mail é obrigatório.")
-    @Email(message = "Insira um e-mail válido.")
+    @NotBlank(message = "Informe seu email")
+    @Email(message = "Insira um e-mail no formato correto exemple@gmail.com")
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
@@ -39,34 +39,35 @@ public class Cliente {
     @Column(nullable = false, unique = true, length = 14)
     private String cpf;
 
-    @NotBlank(message = "O telefone é obrigatório.")
+    @NotBlank(message = "Informe seu telefone no padrão (XX)XXXX-XXXX")
     @Column(nullable = false, length = 20)
     private String telefone;
 
-    @NotBlank(message = "O logradouro é obrigatório.")
+    @NotBlank(message = "Informe seu logradouro")
     @Column(nullable = false, length = 150)
     private String logradouro;
 
-    @Column(length = 20)
+    @NotBlank(message = "Informe seu numero")
+    @Column(length = 1000)
     private String numero;
 
     @Column(length = 100)
     private String complemento;
 
-    @NotBlank(message = "O bairro é obrigatório.")
+    @NotBlank(message = "Informe seu bairro")
     @Column(nullable = false, length = 100)
     private String bairro;
 
-    @NotBlank(message = "A cidade é obrigatória.")
+    @NotBlank(message = "Informe sua cidade")
     @Column(nullable = false, length = 100)
     private String cidade;
 
-    @NotBlank(message = "A UF é obrigatória.")
+    @NotBlank(message = "Informe sua Unidade de Federação")
     @Size(min = 2, max = 2, message = "A UF deve ter 2 caracteres.")
     @Column(nullable = false, length = 2)
     private String uf;
 
-    @NotBlank(message = "O CEP é obrigatório.")
+    @NotBlank(message = "Informe seu CEP")
     @Column(nullable = false, length = 9)
     private String cep;
 }

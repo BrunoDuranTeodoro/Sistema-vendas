@@ -11,7 +11,7 @@
 
     <div class="alert alert-danger">
         <p>
-            Tem certeza que deseja excluir o cliente
+            <h1>Confirmar EXCLUIR CLIENTE?</h1>
             <strong th:text="${cliente.nomeCompleto}"></strong>?
         </p>
     </div>
@@ -37,7 +37,7 @@
 
     <form th:action="@{/clientes/delete/{id}(id=${cliente.id})}" method="post">
         <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
-        <a th:href="@{/clientes}" class="btn btn-secondary">Cancelar</a>
+        <a th:href="@{/clientes}" class="btn btn-secondary">Cancelar Exclusão</a>
     </form>
 </div>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
