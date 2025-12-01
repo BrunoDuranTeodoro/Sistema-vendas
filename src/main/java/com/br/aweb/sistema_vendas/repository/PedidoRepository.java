@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.br.aweb.sistema_vendas.model.Pedido;
 import com.br.aweb.sistema_vendas.model.StatusPedido;
 
+
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
     List<Pedido> findByStatus(StatusPedido status);
-
 }

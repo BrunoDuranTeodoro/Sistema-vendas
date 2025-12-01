@@ -33,7 +33,14 @@ public class ClienteController {
         if (result.hasErrors()) {
             return "cliente/form";
         }
-        clienteService.salvar(cliente);
+       try {
+         clienteService.salvar(cliente);
+       } catch (IllegalArgumentException e) {
+        result.rejectValue("email", "error.cliente",e.getMessage());
+        result.rejectValue("cpf", "error.cliente",e.getMessage());
+
+        return "cliente/form";
+       }
         return "redirect:/clientes";
     }
 
@@ -57,7 +64,17 @@ public class ClienteController {
         if (result.hasErrors()) {
             return "cliente/form";
         }
-        clienteService.atualizar(cliente.getId(), cliente);
+
+        try {
+         clienteService.atualizar(cliente.getId(), cliente);
+       } catch (IllegalArgumentException e) {
+        result.rejectValue("email", "error.cliente",e.getMessage());
+        result.rejectValue("cpf", "error.cliente",e.getMessage());
+
+        return "cliente/form";
+       }
+
+        
         return "redirect:/clientes";
     }
 

@@ -1,5 +1,5 @@
+// src/main/java/com/br/aweb/sistema_vendas/model/Pedido.java
 package com.br.aweb.sistema_vendas.model;
-
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,7 +19,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,7 +28,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Table(name = "pedidos")
-
 public class Pedido {
 
     @Id
@@ -39,33 +37,42 @@ public class Pedido {
     @Version
     private Long version;
 
-    @NotNull(message = "Cliente é obrigatório")
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
-    private Cliente cliente; //congregação
+    private Cliente cliente;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemPedido> itens = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false,length = 10)
+    private StatusPedido status = StatusPedido.ATIVO;
 
     @Column(nullable = false)
     private LocalDateTime dataPedido = LocalDateTime.now();
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false,precision = 10,scale = 2)
     private BigDecimal valorTotal = BigDecimal.ZERO;
- 
-    
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
-    private StatusPedido status = StatusPedido.ATIVO;
 
-    //o papel do cascade (propaga operações desalvar/atualizar/excluir) 
-    //e do orphanRemoval (remove automaticamente itens “órfãos”).
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemPedido> itens = new ArrayList<>();
-    
-
-    public Pedido(Cliente cliente){
+    public Pedido(Cliente cliente) {
         this.cliente = cliente;
     }
 
+    public void recalcularValorTotal() {
+        this.valorTotal = itens.stream()
+                               .map(ItemPedido::getValorTotal)
+                               .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 
+    public void adicionarItem(ItemPedido item) {
+        itens.add(item);
+        item.setPedido(this);
+        recalcularValorTotal();
+    }
 
-
+    public void removerItem(ItemPedido item) {
+        itens.remove(item);
+        item.setPedido(null);
+        recalcularValorTotal();
+    }
 }

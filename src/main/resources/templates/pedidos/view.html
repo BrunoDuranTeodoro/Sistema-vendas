@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhes do Pedido</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Detalhes do Pedido</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            Informações do Pedido
+        </div>
+        <div class="card-body">
+            <p><strong>Cliente:</strong> <span th:text="${pedido.cliente.nomeCompleto}"></span></p>
+            <p><strong>Data/Hora:</strong> <span
+                    th:text="${#temporals.format(pedido.dataPedido, 'dd/MM/yyyy HH:mm')}"></span></p>
+            <p><strong>Status:</strong> <span th:text="${pedido.status}"></span></p>
+            <p><strong>Valor Total:</strong> <span th:text="${#numbers.formatCurrency(pedido.valorTotal)}"></span></p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            Itens do Pedido
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Valor Unitário</th>
+                    <th>Valor Total</th>
+                    <th>Ação</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${pedido.itens}">
+                    <td th:text="${item.produto.nome}"></td>
+                    <td th:text="${item.quantidade}"></td>
+                    <td th:text="${#numbers.formatCurrency(item.valorUnitario)}"></td>
+                    <td th:text="${#numbers.formatCurrency(item.valorTotal)}"></td>
+                    <td>
+                        <form th:if="${pedido.status.name() == 'ATIVO'}"
+                              th:action="@{/pedidos/{id}/remover-item/{itemId}(id=${pedido.id}, itemId=${item.id})}"
+                              method="post">
+                            <button type="submit" class="btn btn-sm btn-danger">Remover</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${pedido.status.name() == 'ATIVO'}">
+                <hr>
+                <h4>Adicionar Item</h4>
+                <form th:action="@{/pedidos/{id}/adicionar-item(id=${pedido.id})}" method="post" class="row g-3 align-items-end">
+                    <div class="col-md-6">
+                        <label for="produtoId" class="form-label">Produto</label>
+                        <select class="form-select" id="produtoId" name="produtoId" required>
+                            <option th:each="produto : ${produtos}"
+                                    th:value="${produto.id}"
+                                    th:text="${produto.nome} + ' (Estoque: ' + ${produto.quantidadeEmEstoque} + ')'"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="quantidade" class="form-label">Quantidade</label>
+                        <input type="number" class="form-control" id="quantidade" name="quantidade" min="1" required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary">Adicionar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a th:href="@{/pedidos}" class="btn btn-secondary">Voltar para a Lista</a>
+        <form th:if="${pedido.status.name() == 'ATIVO'}" class="d-inline"
+              th:action="@{/pedidos/{id}/cancelar(id=${pedido.id})}"
+              method="post">
+            <button type="submit" class="btn btn-danger">Cancelar Pedido</button>
+        </form>
+    </div>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

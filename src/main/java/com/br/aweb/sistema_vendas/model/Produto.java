@@ -1,3 +1,4 @@
+// src/main/java/com/br/aweb/sistema_vendas/model/Produto.java
 package com.br.aweb.sistema_vendas.model;
 
 import java.math.BigDecimal;
@@ -44,4 +45,14 @@ public class Produto {
     @Column(nullable = false)
     private Integer quantidadeEmEstoque;
 
+    public void baixarEstoque(Integer quantidade) {
+        if (quantidade > this.quantidadeEmEstoque) {
+            throw new IllegalArgumentException("Estoque insuficiente");
+        }
+        this.quantidadeEmEstoque -= quantidade;
+    }
+
+    public void estornarEstoque(Integer quantidade) {
+        this.quantidadeEmEstoque += quantidade;
+    }
 }
